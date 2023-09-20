@@ -1,0 +1,41 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main # Cambia esto si tu rama principal tiene otro nombre
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '1.8' # Cambia esto según la versión de Java que uses
+
+    - name: Build JAR
+      run: |
+        # Inserta aquí los comandos necesarios para compilar tu proyecto (por ejemplo, usando Maven o Gradle)
+        # Por ejemplo:
+        # 
+        ./gradlew build
+        # Esto generará el archivo JAR en el directorio build/libs/ o similar
+
+    - name: Create Release
+      id: create_release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          *.jar # Esto incluirá cualquier archivo JAR en la raíz
+        tag_name: v1.0.0 # Cambia esto según la versión que estés lanzando
+        release_name: Release v1.0.0 # Puedes personalizar el nombre del release
+        draft: false
+        prerelease: false
+
+    - name: Get Release URL
+      run: echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
